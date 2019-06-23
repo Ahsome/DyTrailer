@@ -15,6 +15,9 @@ namespace DyTrailer {
             private set;
         }
 
+        public List<string> SupportedMedia {get; } = new List<string>(){"trailer"};
+        public List<string> SupportedContent {get; } = new List<string>(){"Movie"};
+
         public YoutubeRentScraper () {
             ListOfVideos = new List < (string, string) > ();
         }
@@ -52,6 +55,7 @@ namespace DyTrailer {
             string queryUrl = $"https://www.youtube.com/results?search_query={query}";
 
             var queryHtml = UtilClass.GetPageHtml (queryUrl);
+            //TODO: Check to see if the first one is the correct one
             originalLinkId = queryHtml.DocumentNode.SelectNodes ("//div[contains(@class, 'yt-lockup yt-lockup-tile yt-lockup-movie-vertical-poster vve-check clearfix yt-uix-tile')]") [0].Attributes["data-context-item-id"].Value;
 
             return $"https://www.youtube.com/watch?v={originalLinkId}";

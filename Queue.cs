@@ -1,14 +1,15 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace DyTrailer {
     public class Queue {
-        List<IScraper> listOfScrapers;
         List<IContent> listOfContent;
 
         public Queue () {
-            SetPossibleScrappers ();
             listOfContent = new List<IContent> ();
         }
 
@@ -21,53 +22,43 @@ namespace DyTrailer {
             listOfContent.AddRange (contents);
         }
 
-        private void SetPossibleScrappers () {
+        private List<IScraper> GetPossibleScrapers () {
             var tmdbScraper = new TmdbScraper ();
             var youtubeRentScraper = new YoutubeRentScraper ();
             var appleScraper = new AppleScraper ();
-            listOfScrapers = new List<IScraper> () { tmdbScraper };
+            return new List<IScraper> () { tmdbScraper };
         }
 
-        public void DownloadMedia() {
-            foreach (IContent content in listOfContent) {
-                foreach (IScraper scraper in listOfScrapers) {
-                    scraper.SetPossibleVideos (content);
-                    IDownloader downloader = scraper.GetDownloader ();
-                    foreach (IMedia media in content.MediaToDownload) {
-                        Directory.CreateDirectory (media.FileDirectory);
-                        if (MediaExists (media)) {
-                            return;
-                        }
-                        foreach ((string Url, string Type) video in scraper.ListOfVideos) {
-                            if (video.Type == media.Type) {
-                                downloader.Download (video.Url, media);
-                            }
-                        }
-                    }
+        public void StartDownload () {
+            Parallel.ForEach (listOfContent, content => {
+                var listOfScrapers = GetPossibleScrapers ();
+                DownloadContentsMedia (content, listOfScrapers);
+            });
+        }
+
+        private void DownloadContentsMedia (IContent content, List<IScraper> listOfNewScrapers) {
+            foreach (IScraper scraper in listOfNewScrapers) {
+                if (!scraper.SupportedContent.Contains (content.Type)) {
+                    continue;
+                }
+                scraper.SetPossibleVideos (content);
+                Parallel.ForEach (content.MediaToDownload, media =>  {
+                    DownloadIndividualMedia (media, scraper);
+                });
+            }
+        }
+
+        private void DownloadIndividualMedia (IMedia media, IScraper scraper) {
+            Directory.CreateDirectory (media.FileDirectory);
+            if (MediaExists (media) || !scraper.SupportedMedia.Contains (media.Type)) {
+                return;
+            }
+            foreach ((string Url, string Type) video in scraper.ListOfVideos) {
+                if (video.Type == media.Type) {
+                    scraper.GetDownloader().Download (video.Url, media);
+                    break;
                 }
             }
-
-            /*/
-            foreach (IMedia media in content.MediaToDownload) {
-                Directory.CreateDirectory (media.FileDirectory);
-                foreach (IScraper scraper in listOfScrapers) {
-                    if (MediaExists (media)) {
-                        return;
-                    }
-                    scraper.SetPossibleVideos (media);
-                    var downloader = scraper.ReturnDownloader ();
-                    foreach ((string Url, string Type) video in scraper.ListOfVideos) {
-                        if (video.Type == media.Type) {
-                            if (MediaExists (media)) {
-                                return;
-                            }
-                            downloader.Download (video.Url, media);
-                        }
-                    }
-
-                }
-            }
-            */
         }
 
         private bool MediaExists<T> (T media) where T : IMedia {

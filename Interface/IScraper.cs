@@ -8,5 +8,7 @@ namespace DyTrailer
         List < (string Url, string Type) > ListOfVideos { get; }
 
         IDownloader GetDownloader();
+        List<string> SupportedMedia {get; }
+        List<string> SupportedContent {get; }
     }
 }

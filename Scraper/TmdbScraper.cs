@@ -13,6 +13,9 @@ namespace DyTrailer {
             private set;
         }
 
+        public List<string> SupportedMedia {get; } = new List<string>(){"trailer","teaser"};
+        public List<string> SupportedContent {get; } = new List<string>(){"Movie"};
+
         public TmdbScraper () {
             //TODO: Insert ApiKey
             tmdbClient = new TMDbClient ("11c74be7cd64fd121c64222bc9e8c27d");

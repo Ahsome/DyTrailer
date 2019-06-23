@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 
 namespace DyTrailer {
-    internal class MovieScanner : IScanner {
-        public MovieScanner (string moviesDirectory) {
-            DirectoryLocation = moviesDirectory;
+    internal class TvScanner : IScanner {
+        public TvScanner (string tvDirectory) {
+            DirectoryLocation = tvDirectory;
             ListOfContent = new List<IContent>();
         }
 
@@ -18,12 +18,10 @@ namespace DyTrailer {
                 DirectoryInfo di = new DirectoryInfo (directory);
                 string folderName = di.Name;
                 (string Name, int Year) contentDate = GetContentData (folderName);
-                Movie movie = new Movie (contentDate.Name, contentDate.Year, DirectoryLocation);
+                Tv tv = new Tv (contentDate.Name, contentDate.Year, DirectoryLocation);
                 Trailer trailer = new Trailer(true,true);
-                Teaser teaser = new Teaser(true, true);
-                movie.AddMedia(trailer);
-                movie.AddMedia(teaser);
-                ListOfContent.Add(movie);
+                tv.AddMedia(trailer);
+                ListOfContent.Add(tv);
             }
         }
 

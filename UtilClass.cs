@@ -1,6 +1,8 @@
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
+using RestSharp;
 
 namespace DyTrailer {
     public class UtilClass {
@@ -19,6 +21,14 @@ namespace DyTrailer {
             }
 
             return trailerNameBuilder.ToString ().Normalize (NormalizationForm.FormC);
+        }
+
+        public static dynamic GetDynamicJson (string url) {
+            var client = new RestClient (url);
+            var request = new RestRequest (Method.GET);
+
+            string response = client.Execute (request).Content;
+            return JObject.Parse (response);
         }
     }
 }

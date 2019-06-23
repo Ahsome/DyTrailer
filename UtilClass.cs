@@ -1,6 +1,8 @@
 using System.Globalization;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
+using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 
@@ -29,6 +31,14 @@ namespace DyTrailer {
 
             string response = client.Execute (request).Content;
             return JObject.Parse (response);
+        }
+
+        public static HtmlDocument GetPageHtml(string url) {
+            var httpClient = new HttpClient ();
+            var htmlDocument = new HtmlDocument ();
+
+            htmlDocument.LoadHtml (httpClient.GetStringAsync (url).Result);
+            return htmlDocument;
         }
     }
 }

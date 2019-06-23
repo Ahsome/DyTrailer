@@ -1,19 +1,20 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace DyTrailer {
+namespace DyTrailer
+{
     public class TrailerQueue {
-        Boolean shouldAppend;
-        YoutubeRentScraper youtubeRentScraper;
-        TmdbScraper tmdbScraper;
         List<IScraper> listOfScrapers;
 
         public TrailerQueue () {
-            var tmdbScraper = new TmdbScraper();
+            SetPossibleScrappers ();
+        }
+
+        private void SetPossibleScrappers () {
+            var tmdbScraper = new TmdbScraper ();
             var youtubeRentScraper = new YoutubeRentScraper ();
-            var appleScraper = new AppleScraper();
-            listOfScrapers = new List<IScraper> () { appleScraper};
+            var appleScraper = new AppleScraper ();
+            listOfScrapers = new List<IScraper> () { appleScraper, youtubeRentScraper, tmdbScraper };
         }
 
         public void DownloadTrailer<T> (T trailer) where T : ITrailer {
@@ -23,7 +24,7 @@ namespace DyTrailer {
                     return;
                 }
                 scraper.SetTrailerUrl (trailer);
-                scraper.StartDownload(trailer);
+                scraper.StartDownload (trailer);
             }
 
         }

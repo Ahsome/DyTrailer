@@ -8,7 +8,7 @@ using RestSharp;
 
 namespace DyTrailer {
     public class UtilClass {
-        public static string CleanTrailerName (string trailerName) {
+        public static string CleanMediaName (string trailerName) {
             Regex pattern = new Regex ("[\\~#%&*{}/:<>?|\"-]");
             trailerName = pattern.Replace (trailerName, "");
 

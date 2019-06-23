@@ -1,36 +1,39 @@
-using System.IO;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 
 namespace DyTrailer {
     internal class AppleScraper : IScraper {
-        string appleUrl = "";
-        AppleDownloader appleDownloader = new AppleDownloader();
-        public AppleScraper () { }
+        AppleDownloader appleDownloader = new AppleDownloader ();
 
-        public void SetTrailerUrl<T> (T trailer) where T : ITrailer {
-            string cleanedName = UtilClass.CleanTrailerName (trailer.Name).Replace (' ', '+');
-            string appleFindUrl = $"https://trailers.apple.com/trailers/home/scripts/quickfind.php?q={cleanedName}";
-            dynamic appleFindJson = UtilClass.GetDynamicJson(appleFindUrl);
-
-            appleUrl = $"https://trailers.apple.com{appleFindJson.results[0].location}";
+        public List < (string Url, string Type) > ListOfVideos {
+            get;
+            private set;
         }
 
-        public void StartDownload<T> (T trailer) where T : ITrailer {
-            string listUrl = "";
-            dynamic filmData = UtilClass.GetDynamicJson($"{appleUrl}/data/page.json");
+        public AppleScraper () {
+            ListOfVideos = new List < (string, string) > ();
+        }
+
+        public void SetPossibleVideos<T> (T content) where T : IContent {
+            string cleanedName = UtilClass.CleanMediaName (content.Name).Replace (' ', '+');
+            string appleFindUrl = $"https://trailers.apple.com/trailers/home/scripts/quickfind.php?q={cleanedName}";
+            dynamic appleFindJson = UtilClass.GetDynamicJson (appleFindUrl);
+            //TODO: Do check to see if the first one is actually the one we want
+            string appleDataUrl = $"https://trailers.apple.com{appleFindJson.results[0].location}";
+
+            dynamic filmData = UtilClass.GetDynamicJson ($"{appleDataUrl}/data/page.json");
             foreach (dynamic clip in filmData.clips) {
                 dynamic videoType = clip.title.ToString ();
-                if (videoType.Contains ("Trailer")) {
-                    listUrl  = clip.versions.enus.sizes.hd1080.src;
-                    break;
-                }
+                ListOfVideos.Add ((clip.versions.enus.sizes.hd1080.src, videoType.ToLower ()));
             }
+        }
 
-            appleDownloader.Download(listUrl, trailer);
+        public IDownloader GetDownloader () {
+            return appleDownloader;
         }
     }
 }

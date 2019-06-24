@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http;
 using System.Text;
@@ -22,7 +23,7 @@ namespace DyTrailer {
                 }
             }
 
-            return trailerNameBuilder.ToString ().Normalize (NormalizationForm.FormC).ToLower();
+            return trailerNameBuilder.ToString ().Normalize (NormalizationForm.FormC).ToLower ();
         }
 
         public static dynamic GetDynamicJson (string url) {
@@ -33,12 +34,24 @@ namespace DyTrailer {
             return JObject.Parse (response);
         }
 
-        public static HtmlDocument GetPageHtml(string url) {
+        public static HtmlDocument GetPageHtml (string url) {
             var httpClient = new HttpClient ();
             var htmlDocument = new HtmlDocument ();
 
             htmlDocument.LoadHtml (httpClient.GetStringAsync (url).Result);
             return htmlDocument;
+        }
+
+        public static List<IMedia> GetPossibleMedias () {
+            var listOfMedias = new List<IMedia> () {
+                new Trailer (true, true),
+                new Teaser (true, true),
+                new BehindTheScene (true, true),
+                new Featurette (true, true),
+                new Clip (true, true),
+                new Blooper (true, true),
+            };
+            return listOfMedias;
         }
     }
 }

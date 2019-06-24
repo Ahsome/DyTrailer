@@ -17,22 +17,12 @@ namespace DyTrailer {
 
         public void ScanFolder () {
             Parallel.ForEach (Directory.GetDirectories (DirectoryLocation), directory => {
-                DirectoryInfo di = new DirectoryInfo (directory);
-                string folderName = di.Name;
-                (string Name, int Year) contentDate = GetContentData (folderName);
-                Movie content = new Movie (contentDate.Name, contentDate.Year, DirectoryLocation);
-                Trailer trailer = new Trailer (true, true);
-                Teaser teaser = new Teaser (true, true);
-                BehindTheScene bts = new BehindTheScene (true, true);
-                Featurette featurette = new Featurette (true, true);
-                Clip clip = new Clip (true, true);
-                Blooper blooper = new Blooper (true, true);
-                content.AddMedia (trailer);
-                content.AddMedia (teaser);
-                content.AddMedia (bts);
-                content.AddMedia (featurette);
-                content.AddMedia (clip);
-                content.AddMedia (blooper);
+                (string Name, int Year) contentData = GetContentData (new DirectoryInfo(directory).Name);
+                Movie content = new Movie (contentData.Name, contentData.Year, DirectoryLocation);
+                foreach (var media in UtilClass.GetPossibleMedias())
+                {
+                    content.AddMedia(media);
+                }
                 ListOfContent.Add (content);
             });
         }

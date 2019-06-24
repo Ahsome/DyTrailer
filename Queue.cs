@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using System.Collections.Async;
 
 namespace DyTrailer
 {
@@ -27,27 +28,33 @@ namespace DyTrailer
             return new List<IScraper> () { tmdbScraper };
         }
 
-        public void StartDownload () {
-            Parallel.ForEach (listOfContent, content => {
+        public async Task StartDownload () {
+            var foreachTask = Task.Run(() => {
+            Parallel.ForEach (listOfContent, content =>  {
                 var listOfScrapers = GetPossibleScrapers ();
-                DownloadContentsMedia (content, listOfScrapers);
+                DownloadContentMedias (content, listOfScrapers).Wait();
             });
+            });
+            await foreachTask;
         }
 
-        private void DownloadContentsMedia (IContent content, List<IScraper> listOfNewScrapers) {
+        private async Task DownloadContentMedias (IContent content, List<IScraper> listOfNewScrapers) {
+            List<Task> taskMediaDownloading = new List<Task>();
             foreach (IScraper scraper in listOfNewScrapers) {
                 if (!scraper.SupportedContent.Contains (content.Type)) {
                     continue;
                 }
+                //TODO: Make it so SetVideos only adds one video per type please
                 scraper.SetPossibleVideos (content);
                 foreach (var media in content.MediaToDownload)
                 {
-                    DownloadIndividualMedia (media, scraper);
+                    taskMediaDownloading.Add(Task.Run(() => DownloadIndividualMedia (media, scraper)));
                 }
             }
+            await Task.WhenAll(taskMediaDownloading);
         }
 
-        private void DownloadIndividualMedia (IMedia media, IScraper scraper) {
+        private async Task DownloadIndividualMedia (IMedia media, IScraper scraper) {
             //TODO: only make folder if the supported media exists
             Directory.CreateDirectory (media.FileDirectory);
             if (MediaExists (media) || !scraper.SupportedMedia.Contains (media.Type)) {
@@ -56,7 +63,7 @@ namespace DyTrailer
             foreach ((string Url, string Type) video in scraper.ListOfVideos) {
                 if (video.Type == media.Type) {
                     var downloader = scraper.GetDownloader();
-                    downloader.Download (video.Url, media);
+                    await downloader.Download (video.Url, media);
                     //* NOTE: This breaks downloading once one version of the file is downloaded. Consider downloading multiple versions?
                     break;
                 }

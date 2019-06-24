@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DyTrailer {
     class MainProgram {
-        static void Main (string[] args) {
+        static async Task Main (string[] args) {
             string newPath = AppDomain.CurrentDomain.BaseDirectory;
             string movieDirectory = Path.Combine (newPath, "Movies");
             string tvDirectory = Path.Combine (newPath, "TV Shows");
@@ -24,8 +24,7 @@ namespace DyTrailer {
             queue.AddToQueue (movieScanner.ListOfContent);
             queue.AddToQueue (tvScanner.ListOfContent);
 
-            queue.StartDownload ();
-            Console.ReadLine();
+            await queue.StartDownload ();
         }
     }
 }

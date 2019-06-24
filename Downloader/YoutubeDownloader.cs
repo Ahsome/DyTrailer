@@ -5,8 +5,6 @@ using YoutubeExplode.Converter;
 
 namespace DyTrailer {
     public class YoutubeDownloader : IDownloader {
-        public bool HasCompleted {get; private set;} = false;
-
         public void Download<T> (string url, T media) where T : IMedia {
             var converter = new YoutubeConverter ();
             var videoId = url;

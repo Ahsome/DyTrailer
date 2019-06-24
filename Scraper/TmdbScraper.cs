@@ -14,8 +14,17 @@ namespace DyTrailer {
         }
 
         //TODO: Set it so its possible supported media changes based on type of content
-        public List<string> SupportedMedia {get; } = new List<string>(){"trailer","teaser","clip","featurette","behind the scenes","bloopers"};
-        public List<string> SupportedContent {get; } = new List<string>(){"movie","tv"};
+        public List<string> SupportedMedia { get; } = new List<string> () {
+            "trailer",
+            "teaser",
+            "clip",
+            "featurette",
+            "behind the scenes",
+            "bloopers",
+            "clip",
+            "blooper"
+        };
+        public List<string> SupportedContent { get; } = new List<string> () { "movie", "tv" };
 
         public TmdbScraper () {
             //TODO: Insert ApiKey
@@ -25,13 +34,12 @@ namespace DyTrailer {
 
         public void SetPossibleVideos<T> (T content) where T : IContent {
             ListOfVideos.Clear ();
-            switch (content.Type)
-            {
+            switch (content.Type) {
                 case "movie":
-                    FindMovieVideos(content);
+                    FindMovieVideos (content);
                     break;
                 case "tv":
-                    FindTvVideos(content);
+                    FindTvVideos (content);
                     break;
             }
         }
@@ -95,8 +103,6 @@ namespace DyTrailer {
             }
         }
 
-        
-
         private bool IsVideoType (dynamic searchResult, string type) {
             if (searchResult == type.ToLower ()) {
                 return true;
@@ -126,9 +132,8 @@ namespace DyTrailer {
             } else { return false; }
         }
 
-        public IDownloader GetDownloader()
-        {
-            return new YoutubeDownloader();
+        public IDownloader GetDownloader () {
+            return new YoutubeDownloader ();
         }
     }
 }

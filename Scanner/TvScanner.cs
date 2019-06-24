@@ -19,16 +19,20 @@ namespace DyTrailer {
                 DirectoryInfo di = new DirectoryInfo (directory);
                 string folderName = di.Name;
                 (string Name, int Year) contentDate = GetContentData (folderName);
-                Tv tv = new Tv (contentDate.Name, contentDate.Year, DirectoryLocation);
+                Tv content = new Tv (contentDate.Name, contentDate.Year, DirectoryLocation);
                 Trailer trailer = new Trailer (true, true);
                 Teaser teaser = new Teaser (true, true);
                 BehindTheScene bts = new BehindTheScene (true, true);
-                Featurette featurette = new Featurette(true, true);
-                tv.AddMedia (trailer);
-                tv.AddMedia (teaser);
-                tv.AddMedia (bts);
-                tv.AddMedia(featurette);
-                ListOfContent.Add (tv);
+                Featurette featurette = new Featurette (true, true);
+                Clip clip = new Clip (true, true);
+                Blooper blooper = new Blooper (true, true);
+                content.AddMedia (trailer);
+                content.AddMedia (teaser);
+                content.AddMedia (bts);
+                content.AddMedia (featurette);
+                content.AddMedia (clip);
+                content.AddMedia (blooper);
+                ListOfContent.Add (content);
             });
         }
 

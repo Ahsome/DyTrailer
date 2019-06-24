@@ -16,8 +16,8 @@ namespace DyTrailer {
 
         public void ScanFolder () {
             Parallel.ForEach (Directory.GetDirectories (DirectoryLocation), directory => {
-                (string Name, int Year) contentDate = GetContentData (new DirectoryInfo(directory).Name);
-                Tv content = new Tv (contentDate.Name, contentDate.Year, DirectoryLocation);
+                (string Name, int Year) contentData = GetContentData (new DirectoryInfo(directory).Name);
+                Tv content = new Tv (contentData.Name, contentData.Year, DirectoryLocation);
                 foreach (var media in UtilClass.GetPossibleMedias())
                 {
                     content.AddMedia(media);

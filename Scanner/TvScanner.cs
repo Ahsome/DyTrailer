@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace DyTrailer {
     internal class TvScanner : IScanner {
@@ -14,15 +15,21 @@ namespace DyTrailer {
         public string DirectoryLocation { get; private set; }
 
         public void ScanFolder () {
-            foreach (string directory in Directory.GetDirectories (DirectoryLocation)) {
+            Parallel.ForEach (Directory.GetDirectories (DirectoryLocation), directory => {
                 DirectoryInfo di = new DirectoryInfo (directory);
                 string folderName = di.Name;
                 (string Name, int Year) contentDate = GetContentData (folderName);
                 Tv tv = new Tv (contentDate.Name, contentDate.Year, DirectoryLocation);
-                Trailer trailer = new Trailer(true,true);
-                tv.AddMedia(trailer);
-                ListOfContent.Add(tv);
-            }
+                Trailer trailer = new Trailer (true, true);
+                Teaser teaser = new Teaser (true, true);
+                BehindTheScene bts = new BehindTheScene (true, true);
+                Featurette featurette = new Featurette(true, true);
+                tv.AddMedia (trailer);
+                tv.AddMedia (teaser);
+                tv.AddMedia (bts);
+                tv.AddMedia(featurette);
+                ListOfContent.Add (tv);
+            });
         }
 
         private (string name, int year) GetContentData (string folderName) {

@@ -1,10 +1,9 @@
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace DyTrailer {
     internal class AppleDownloader : IDownloader {
-        public AppleDownloader () { }
-
         public void Download<T> (string url, T media) where T : IMedia {
 
             if (url != "") {

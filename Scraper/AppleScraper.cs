@@ -15,7 +15,7 @@ namespace DyTrailer {
         }
 
         public List<string> SupportedMedia {get; } = new List<string>(){"trailer"};
-        public List<string> SupportedContent {get; } = new List<string>(){"Movie"};
+        public List<string> SupportedContent {get; } = new List<string>(){"movie"};
 
         public AppleScraper () {
             ListOfVideos = new List < (string, string) > ();

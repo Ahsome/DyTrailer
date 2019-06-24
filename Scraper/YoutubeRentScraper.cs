@@ -16,7 +16,7 @@ namespace DyTrailer {
         }
 
         public List<string> SupportedMedia {get; } = new List<string>(){"trailer"};
-        public List<string> SupportedContent {get; } = new List<string>(){"Movie"};
+        public List<string> SupportedContent {get; } = new List<string>(){"movie"};
 
         public YoutubeRentScraper () {
             ListOfVideos = new List < (string, string) > ();

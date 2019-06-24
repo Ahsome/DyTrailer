@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace DyTrailer {
     class MainProgram {
@@ -11,10 +12,11 @@ namespace DyTrailer {
             string tvDirectory = Path.Combine (newPath, "TV Shows");
 
             var movieScanner = new MovieScanner (movieDirectory);
-            movieScanner.ScanFolder ();
-
             var tvScanner = new TvScanner (tvDirectory);
+
+            movieScanner.ScanFolder ();
             tvScanner.ScanFolder ();
+
 
             //TODO: Rather than use DownloadMovie, maybe have AddMovie so to download in Queue
             var queue = new Queue ();
@@ -23,6 +25,7 @@ namespace DyTrailer {
             queue.AddToQueue (tvScanner.ListOfContent);
 
             queue.StartDownload ();
+            Console.ReadLine();
         }
     }
 }

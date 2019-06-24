@@ -22,7 +22,7 @@ namespace DyTrailer {
                 }
             }
 
-            return trailerNameBuilder.ToString ().Normalize (NormalizationForm.FormC);
+            return trailerNameBuilder.ToString ().Normalize (NormalizationForm.FormC).ToLower();
         }
 
         public static dynamic GetDynamicJson (string url) {

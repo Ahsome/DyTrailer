@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace DyTrailer {
+namespace DyTrailer
+{
     public class Queue {
         List<IContent> listOfContent;
 
@@ -42,20 +40,24 @@ namespace DyTrailer {
                     continue;
                 }
                 scraper.SetPossibleVideos (content);
-                Parallel.ForEach (content.MediaToDownload, media =>  {
+                foreach (var media in content.MediaToDownload)
+                {
                     DownloadIndividualMedia (media, scraper);
-                });
+                }
             }
         }
 
         private void DownloadIndividualMedia (IMedia media, IScraper scraper) {
+            //TODO: only make folder if the supported media exists
             Directory.CreateDirectory (media.FileDirectory);
             if (MediaExists (media) || !scraper.SupportedMedia.Contains (media.Type)) {
                 return;
             }
             foreach ((string Url, string Type) video in scraper.ListOfVideos) {
                 if (video.Type == media.Type) {
-                    scraper.GetDownloader().Download (video.Url, media);
+                    var downloader = scraper.GetDownloader();
+                    downloader.Download (video.Url, media);
+                    //* NOTE: This breaks downloading once one version of the file is downloaded. Consider downloading multiple versions?
                     break;
                 }
             }

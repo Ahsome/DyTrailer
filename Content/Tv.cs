@@ -42,6 +42,6 @@ namespace DyTrailer
         public int Year { get; private set; }
         public string ContentDirectory { get; private set; }
         public List<IMedia> MediaToDownload { get; private set; } = new List<IMedia> ();
-        public string Type => "Tv";
+        public string Type => "tv";
     }
 }

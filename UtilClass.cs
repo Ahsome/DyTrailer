@@ -56,9 +56,9 @@ namespace DyTrailer {
 
         public static List<IScraper> GetPossibleScrapers () {
             var listOfScrapers = new List<IScraper> () {
-                new AppleScraper (),
+                //new AppleScraper (),
                 new YoutubeRentScraper (),
-                new TmdbScraper (),
+                //new TmdbScraper (),
             };
             return listOfScrapers;
         }

@@ -7,36 +7,32 @@ using RestSharp;
 
 namespace DyTrailer {
     internal class AppleScraper : IScraper {
-        AppleDownloader appleDownloader = new AppleDownloader ();
 
-        public List < (string Url, string Type) > ListOfVideos {
-            get;
-            private set;
-        }
-
-        public List<string> SupportedMedia {get; } = new List<string>(){"trailer"};
-        public List<string> SupportedContent {get; } = new List<string>(){"movie"};
-
-        public AppleScraper () {
-            ListOfVideos = new List < (string, string) > ();
-        }
+        public List < (string Url, string Type) > ListOfVideos { get; private set; } = new List<(string Url, string Type)>();
+        public List<string> SupportedMedia { get; } = new List<string> () { "trailer","clip","featurette" };
+        public List<string> SupportedContent { get; } = new List<string> () { "movie" };
 
         public void SetPossibleVideos<T> (T content) where T : IContent {
             string cleanedName = UtilClass.CleanMediaName (content.Name).Replace (' ', '+');
             string appleFindUrl = $"https://trailers.apple.com/trailers/home/scripts/quickfind.php?q={cleanedName}";
             dynamic appleFindJson = UtilClass.GetDynamicJson (appleFindUrl);
             //TODO: Do check to see if the first one is actually the one we want
-            string appleDataUrl = $"https://trailers.apple.com{appleFindJson.results[0].location}";
+            try {
+                string appleDataUrl = $"https://trailers.apple.com{appleFindJson.results[0].location}";
 
-            dynamic filmData = UtilClass.GetDynamicJson ($"{appleDataUrl}/data/page.json");
-            foreach (dynamic clip in filmData.clips) {
-                dynamic videoType = clip.title.ToString ();
-                ListOfVideos.Add ((clip.versions.enus.sizes.hd1080.src, videoType.ToLower ()));
+                dynamic filmData = UtilClass.GetDynamicJson ($"{appleDataUrl}/data/page.json");
+                foreach (dynamic clip in filmData.clips) {
+                    dynamic videoType = clip.title.ToString ();
+                    //TODO: Change it so videoType actually stores it in the same way as we need it (i.e. trailer, not trailer 2 etc.)
+                    ListOfVideos.Add ((clip.versions.enus.sizes.hd1080.src, videoType.ToLower ()));
+                }
+            } catch (Exception) {
+                Console.WriteLine ($"WARNING: {content.Name} does not exist on Apple Trailers. Continuing on");
             }
         }
 
         public IDownloader GetDownloader () {
-            return appleDownloader;
+            return new AppleDownloader ();
         }
     }
 }

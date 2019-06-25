@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DyTrailer
 {
@@ -7,5 +8,6 @@ namespace DyTrailer
         List<IContent> ListOfContent {get; }
         string DirectoryLocation {get; }
         void ScanFolder();
+        Task ScanFolderAsync();
     }
 }

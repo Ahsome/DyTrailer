@@ -6,6 +6,6 @@ namespace DyTrailer {
         int Year { get; }
         string ContentDirectory { get; }
         string Type {get; }
-        List<IMedia> MediaToDownload { get; }
+        List<IMedia> Medias { get; }
     }
 }

@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 using RestSharp;
 
 namespace DyTrailer {
-    public class UtilClass {
+    public static class UtilClass {
         public static string CleanMediaName (string trailerName) {
             Regex pattern = new Regex ("[\\~#%&*{}/:<>?|\"-]");
             trailerName = pattern.Replace (trailerName, "");
@@ -52,6 +52,15 @@ namespace DyTrailer {
                 new Blooper (true, true),
             };
             return listOfMedias;
+        }
+
+        public static List<IScraper> GetPossibleScrapers () {
+            var listOfScrapers = new List<IScraper> () {
+                new AppleScraper (),
+                new YoutubeRentScraper (),
+                new TmdbScraper (),
+            };
+            return listOfScrapers;
         }
     }
 }

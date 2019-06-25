@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using YoutubeExplode;
@@ -12,7 +13,13 @@ namespace DyTrailer {
             if (url.Contains ("youtu")) {
                 videoId = YoutubeClient.ParseVideoId (url);
             }
+            try {
             await converter.DownloadVideoAsync ($"{videoId}", Path.Combine (media.FileDirectory, $"{media.FileName}.mp4"));
+            } catch (Exception e)
+            {
+                Console.WriteLine($"Error exception. Message: {e.Message}");
+            }
+            Console.WriteLine($"COMPLETED: Finished downloading {media.FileName}");
         }
     }
 }

@@ -14,6 +14,10 @@ namespace DyTrailer {
 
         public string DirectoryLocation { get; private set; }
 
+        public async Task ScanFolderAsync() {
+            Task scanFolderAsync = Task.Run(() => ScanFolder());
+            await scanFolderAsync;
+        }
         public void ScanFolder () {
             Parallel.ForEach (Directory.GetDirectories (DirectoryLocation), directory => {
                 (string Name, int Year) contentData = GetContentData (new DirectoryInfo(directory).Name);

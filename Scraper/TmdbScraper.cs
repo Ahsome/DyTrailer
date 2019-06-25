@@ -88,7 +88,7 @@ namespace DyTrailer {
         }
 
         private bool MatchYear<T> (SearchMovie searchResult, T content) where T : IContent {
-            if (searchResult.ReleaseDate.Value.Year == content.Year) {
+            if (searchResult?.ReleaseDate?.Year == content.Year) {
                 return true;
             } else {
                 return false;
@@ -96,7 +96,7 @@ namespace DyTrailer {
         }
 
         private bool MatchYear<T> (SearchTv searchResult, T content) where T : IContent {
-            if (searchResult.FirstAirDate.Value.Year == content.Year) {
+            if (searchResult?.FirstAirDate?.Year == content.Year) {
                 return true;
             } else {
                 return false;
@@ -110,7 +110,7 @@ namespace DyTrailer {
             return false;
         }
 
-        private dynamic GetTmdbVideoData (SearchMovie searchResult) {
+        private dynamic GetTmdbVideoData (SearchBase searchResult) {
             dynamic tmdbJson = UtilClass.GetDynamicJson ($"https://api.themoviedb.org/3/movie/{searchResult.Id}/videos?language=en-US&api_key={tmdbClient.ApiKey}");
             return tmdbJson.results;
         }

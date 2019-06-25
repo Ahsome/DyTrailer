@@ -14,9 +14,7 @@ namespace DyTrailer {
             var movieScanner = new MovieScanner (movieDirectory);
             var tvScanner = new TvScanner (tvDirectory);
 
-            movieScanner.ScanFolder ();
-            tvScanner.ScanFolder ();
-
+            await Task.WhenAll(movieScanner.ScanFolderAsync(), tvScanner.ScanFolderAsync());
 
             //TODO: Rather than use DownloadMovie, maybe have AddMovie so to download in Queue
             var queue = new Queue ();

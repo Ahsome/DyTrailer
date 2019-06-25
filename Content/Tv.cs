@@ -35,13 +35,13 @@ namespace DyTrailer
         }
 
         public void AddMedia (IMedia media) {
-            MediaToDownload.Add (media);
+            Medias.Add (media);
             media.SetProperties(this);
         }
         public string Name { get; private set; }
         public int Year { get; private set; }
         public string ContentDirectory { get; private set; }
-        public List<IMedia> MediaToDownload { get; private set; } = new List<IMedia> ();
+        public List<IMedia> Medias { get; private set; } = new List<IMedia> ();
         public string Type => "tv";
     }
 }
